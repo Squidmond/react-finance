@@ -1,5 +1,9 @@
 import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
 
+import { connect } from "react-redux";
+
+import { exampleAction } from "./actions";
 class Navbar extends Component {
   constructor() {
     super();
@@ -14,7 +18,7 @@ class Navbar extends Component {
     var searchValue = document
       .getElementsByName("search")[0]
       .value.toLowerCase();
-
+    this.props.exampleAction(searchValue);
     if (this.state.allSymbols.length === 0) {
       var response = await fetch(
         "https://api.iextrading.com/1.0/ref-data/symbols"
@@ -23,13 +27,19 @@ class Navbar extends Component {
       this.setState({ allSymbols: data });
     }
     this.setState({ searchValue: searchValue });
-    var matchedSymbols = this.state.allSymbols.filter(function(e) {
-      return (
-        e.symbol.toLowerCase() === searchValue ||
-        e.name.toLowerCase().indexOf(searchValue) >= 0
-      );
-    });
 
+    if (searchValue !== "") {
+      var matchedSymbols = this.state.allSymbols
+        .filter(function(e) {
+          return (
+            e.symbol.toLowerCase() === searchValue ||
+            e.name.toLowerCase().indexOf(searchValue) >= 0
+          );
+        })
+        .slice(0, 10);
+    } else {
+      matchedSymbols = [];
+    }
     if (this.props.hasOwnProperty("setMatchedSymbols")) {
       this.props.setMatchedSymbols(matchedSymbols);
     }
@@ -37,10 +47,10 @@ class Navbar extends Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="/">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <NavLink className="navbar-brand" to="/">
           React Finance
-        </a>
+        </NavLink>
         <button
           className="navbar-toggler"
           type="button"
@@ -56,49 +66,14 @@ class Navbar extends Component {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
-              <a className="nav-link" href="/">
+              <NavLink className="nav-link" to="/">
                 Home <span className="sr-only">(current)</span>
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">
-                Link
-              </a>
-            </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="/"
-                id="navbarDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Dropdown
-              </a>
-              <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="/">
-                  Action
-                </a>
-                <a className="dropdown-item" href="/">
-                  Another action
-                </a>
-                <div className="dropdown-divider" />
-                <a className="dropdown-item" href="/">
-                  Something else here
-                </a>
-              </div>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link disabled"
-                href="/"
-                tabIndex="-1"
-                aria-disabled="true"
-              >
-                Disabled
-              </a>
+              <NavLink className="nav-link" to="/about">
+                About
+              </NavLink>
             </li>
           </ul>
           <form
@@ -135,4 +110,24 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+const mapStateToProps = state => {
+  return {
+    example: state.exampleReducer
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    exampleAction: change => {
+      dispatch(exampleAction(change));
+    }
+  };
+};
+
+//Instead of exporting a component, I export a "connected component"
+//Each connected component has functions that explain how the component
+//interacts with the store
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Navbar);

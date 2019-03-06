@@ -4,6 +4,8 @@ import News from "./News";
 import Chart from "./Chart";
 import Quote from "./Quote";
 
+import { NavLink } from "react-router-dom";
+
 class SymbolDetails extends Component {
   constructor() {
     super();
@@ -43,7 +45,6 @@ class SymbolDetails extends Component {
       });
     }
   }
-
   render() {
     return (
       <div className="m-1 p-4 bg-dark text-light">
@@ -56,7 +57,6 @@ class SymbolDetails extends Component {
                 <Company data={this.state.data} />
                 <Quote data={this.state.quote} />
               </div>
-
               <div className="col">
                 <News data={this.state.news} />
               </div>
@@ -70,12 +70,12 @@ class SymbolDetails extends Component {
         ) : (
           <div>
             <Company data={this.state.data} />
-            <a
+            <NavLink
               className="btn btn-block btn-primary"
-              href={"/details/" + this.props.symbol.symbol}
+              to={"/details/" + this.props.symbol.symbol}
             >
               {this.props.symbol.name}
-            </a>
+            </NavLink>
           </div>
         )}
       </div>

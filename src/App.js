@@ -3,8 +3,9 @@ import React, { Component } from "react";
 import Navbar from "./Navbar";
 import Home from "./Home";
 import SymbolDetails from "./SymbolDetails";
+import Search from "./Search";
 
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 class App extends Component {
   constructor() {
@@ -22,24 +23,27 @@ class App extends Component {
           setMatchedSymbols={this.setMatchedSymbols}
         />
         <Switch>
+          {/* <Route path="/" exact render={() =>  <Home /> } />
+        <Route path="/search" render={() => <Search data={this.state.matchedSymbols} />} /> */}
+
           <Route
             path="/"
             exact
             render={() =>
-              this.state.matchedSymbols.length === 0 ? (
-                <Home />
+              this.state.matchedSymbols.length > 0 ? (
+                <Redirect to="/search" />
               ) : (
-                <div className="container-fluid">
-                  <div className="row">
-                    {this.state.matchedSymbols.map(function(e) {
-                      return (
-                        <div className="col-4" key={e.symbol}>
-                          <SymbolDetails symbol={e} />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                <Home />
+              )
+            }
+          />
+          <Route
+            path="/search"
+            render={() =>
+              this.state.matchedSymbols.length === 0 ? (
+                <Redirect to="/" />
+              ) : (
+                <Search data={this.state.matchedSymbols} />
               )
             }
           />

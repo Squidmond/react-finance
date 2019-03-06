@@ -11,12 +11,12 @@ class News extends Component {
               return (
                 <div key={i}>
                   <blockquote>
-                    <img src={e.image} />
+                    {/* <img src={e.image} /> */}
                     <h3>
                       <a href={e.url}>{e.headline}</a>
                     </h3>
                     <p>{e.summary}</p>
-                    <p>{e.related}</p>
+                    <p>{e.related.split(",").join(", ")}</p>
                     <cite>
                       {e.source} @ {e.datetime}
                     </cite>
