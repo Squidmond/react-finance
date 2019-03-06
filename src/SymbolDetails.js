@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import Company from "./Company";
+import News from "./News";
+import Chart from "./Chart";
+import Quote from "./Quote";
 
 class SymbolDetails extends Component {
   constructor() {
@@ -45,55 +49,34 @@ class SymbolDetails extends Component {
       <div className="m-1 p-4 bg-dark text-light">
         {!this.state.loaded ? (
           <progress />
+        ) : this.props.showFullDetail ? (
+          <div>
+            <div className="row">
+              <div className="col">
+                <Company data={this.state.data} />
+                <Quote data={this.state.quote} />
+              </div>
+
+              <div className="col">
+                <News data={this.state.news} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col">
+                <Chart data={this.state.chart} />
+              </div>
+            </div>
+          </div>
         ) : (
           <div>
-            <h1>{this.state.data.companyName}</h1>
-            <p>{this.state.data.description}</p>
-            <dl>
-              <dt>Industry</dt>
-              <dd>{this.state.data.industry}</dd>
-              <dt>Sector</dt>
-              <dd>{this.state.data.sector}</dd>
-              <dt>CEO</dt>
-              <dd>{this.state.data.CEO}</dd>
-              <dt>Exchange</dt>
-              <dd>{this.state.data.exchange}</dd>
-            </dl>
-            {this.state.news && this.state.news.length > 0 ? (
-              <div>
-                <h2>News</h2>
-                {this.state.news.map(function(e, i) {
-                  return (
-                    <div key={i}>
-                      <blockquote>
-                        <img src={e.image} alt="file not found" />
-                        <h3>
-                          <a href={e.url}>{e.headline}</a>
-                        </h3>
-                        <p>{e.summary}</p>
-                        <p>{e.related}</p>
-                        <cite>
-                          {e.source} @ {e.datetime}
-                        </cite>
-                      </blockquote>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              ""
-            )}
+            <Company data={this.state.data} />
+            <a
+              className="btn btn-block btn-primary"
+              href={"/details/" + this.props.symbol.symbol}
+            >
+              {this.props.symbol.name}
+            </a>
           </div>
-        )}
-        {this.props.showFullDetail ? (
-          ""
-        ) : (
-          <a
-            className="btn btn-block btn-primary"
-            href={"/details/" + this.props.symbol.symbol}
-          >
-            {this.props.symbol.name}
-          </a>
         )}
       </div>
     );
